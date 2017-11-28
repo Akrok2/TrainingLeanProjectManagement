@@ -1,0 +1,10 @@
+*.suo
+*.exe
+*.ilk
+*.pdb
+*.log
+*.obj
+*.pch
+*.tlog
+*.lastbuildstate
+*.idb
