@@ -43,7 +43,8 @@ public:
 	{}
 	Ticket(Ticket &&) = delete;
 
-	void setEndDate(const int newEndDate) {
+	void setEndDate(const int newEndDate) 
+	{
 		m_endDate = newEndDate;
 	}
 
@@ -185,7 +186,7 @@ private:
 		move(outputtedTickets.begin(), outputtedTickets.end(), back_inserter(m_cumulatedThroughput));
 
 		// fill in the end date for all finished tickets
-		for (TicketEntityPtr& ticket : outputtedTickets)
+		for (TicketEntityPtr& ticket : m_cumulatedThroughput)
 			ticket->setEndDate(m_currentDay);
 	}
 
@@ -199,8 +200,6 @@ private:
 			cout << "box " << i << " (speed: " << box.speed() << ")" << endl;
 			cout << "\t queue: " << box.numberOfQueuedTickets() << endl;
 			cout << "\t in progress: " << box.doneTickets().size() << endl << endl;
-			for (const TicketEntityPtr& ticket : box.doneTickets())
-				cout << "\t Ticket start date: " << ticket->getStartDate() << " Ticket end date: " << ticket->getEndDate() << endl;
 			++i;
 		}
 	}
