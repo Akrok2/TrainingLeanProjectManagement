@@ -258,7 +258,7 @@ public:
 				break;
 			default:
 				runCommand(ans);
-				cout << "What do you want to do? (q: quit, anything else: continue)" << endl;
+				cout << "Please enter a command? (q: quit, anything else: continue)" << endl;
 			}
 
 			getInputLine(cin, ans);
@@ -283,14 +283,14 @@ private:
 
 int main()
 {
-	cout << "Number of boxes? " << endl;
+	cout << "Number of boxes: ";
 	int nbBoxes = waitForPositiveIntegerFromStdIn();
-
+	cout << endl;
 
 	deque<Box> boxQueue;
 	for (int i = 0; i < nbBoxes; ++i)
 	{
-		cout << "Speed for box " << i << "? " << endl;
+		cout << "Speed for box " << i << ": ";
 		int speed = waitForPositiveIntegerFromStdIn();
 		boxQueue.push_back(Box(speed));
 	}
