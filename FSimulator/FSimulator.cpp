@@ -43,6 +43,10 @@ public:
 	{}
 	Ticket(Ticket &&) = delete;
 
+	void setEndDate(const int newEndDate) {
+		m_endDate = newEndDate;
+	}
+
 private:
 	int m_startDate;
 	int m_endDate;
@@ -52,9 +56,9 @@ private:
 using TicketEntityPtr = unique_ptr<Ticket>;
 
 
-TicketEntityPtr make_ticket()
+TicketEntityPtr make_ticket(const int startDate)
 {
-	return make_unique<Ticket>();
+	return make_unique<Ticket>(startDate);
 }
 
 
@@ -115,7 +119,7 @@ class PipelineController
 {
 public:
 	PipelineController(deque<Box> boxes)
-		: m_boxes(move(boxes))
+		: m_boxes(move(boxes)), m_currentDay(0)
 	{}
 
 	void stepForward()
@@ -133,6 +137,9 @@ public:
 		updateGlobalThroughput();
 
 		cout << "cumulated throughput: " << m_cumulatedThroughput.size() << endl;
+
+		// corresponding to the current day
+		m_currentDay++;
 	}
 
 private:
@@ -151,7 +158,7 @@ private:
 		// feed new work in first box
 		auto & firstBox = m_boxes.front();
 		for (int i = 0; i < firstBox.speed(); ++i) {
-			firstBox.inboxTickets().push_back(make_ticket());
+			firstBox.inboxTickets().push_back(make_ticket(m_currentDay));
 		}
 	}
 
@@ -163,6 +170,10 @@ private:
 
 		deque<TicketEntityPtr> outputtedTickets = popAll(m_boxes.back().doneTickets());
 		move(outputtedTickets.begin(), outputtedTickets.end(), back_inserter(m_cumulatedThroughput));
+
+		// fill in the end date for all finished tickets
+		for (TicketEntityPtr& ticket : outputtedTickets)
+			ticket->setEndDate(m_currentDay);
 	}
 
 	void printBoxStates() const
@@ -182,6 +193,7 @@ private:
 	deque<Box> m_boxes;
 	deque<TicketEntityPtr> m_cumulatedThroughput;
 	int m_lastDayThroughput;
+	int m_currentDay;
 };
 
 
