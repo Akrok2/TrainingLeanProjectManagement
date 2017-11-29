@@ -126,6 +126,9 @@ public:
 	{
 		feedInputBoxQueues();
 
+		int lastDayCumulatedThroughput = m_cumulatedThroughput.size();
+		int lastDayThoughputToPrint = m_lastDayThroughput;
+
 		// launch boxes sequentially - virtually in parallel in the sim
 		for (auto & box : m_boxes)
 			box.perform();
@@ -136,10 +139,10 @@ public:
 		// takes last box "done" work to put it in global throughput container
 		updateGlobalThroughput();
 
-		cout << "cumulated throughput: " << m_cumulatedThroughput.size() << endl;
+		m_lastDayThroughput = m_cumulatedThroughput.size() - lastDayCumulatedThroughput;
 
-		// corresponding to the current day
-		m_currentDay++;
+		cout << "daily throughput: " << lastDayThoughputToPrint << endl;
+		cout << "cumulated throughput: " << lastDayCumulatedThroughput << endl;
 	}
 
 private:
