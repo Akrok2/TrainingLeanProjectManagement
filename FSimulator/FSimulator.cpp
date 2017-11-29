@@ -47,6 +47,16 @@ public:
 		m_endDate = newEndDate;
 	}
 
+	int getEndDate(void)
+	{
+		return m_endDate;
+	}
+
+	int getStartDate(void)
+	{
+		return m_startDate;
+	}
+
 private:
 	int m_startDate;
 	int m_endDate;
@@ -189,6 +199,8 @@ private:
 			cout << "box " << i << " (speed: " << box.speed() << ")" << endl;
 			cout << "\t queue: " << box.numberOfQueuedTickets() << endl;
 			cout << "\t in progress: " << box.doneTickets().size() << endl << endl;
+			for (const TicketEntityPtr& ticket : box.doneTickets())
+				cout << "\t Ticket start date: " << ticket->getStartDate() << " Ticket end date: " << ticket->getEndDate() << endl;
 			++i;
 		}
 	}
