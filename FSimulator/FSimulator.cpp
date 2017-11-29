@@ -87,6 +87,11 @@ public:
 		return m_inboxTickets.size();
 	}
 
+	void setSpeed(int speed)
+	{
+		m_speed = speed;
+	}
+
 	int speed() const
 	{
 		return m_speed;
@@ -165,6 +170,11 @@ public:
 		cout << "daily throughput: " << lastDayThoughputToPrint << endl;
 		cout << "cumulated throughput: " << lastDayCumulatedThroughput << endl;
 		cout << "cycle time: " << m_cycleTime << endl;
+	}
+
+	void setSpeed(int boxIndex, int boxSpeed)
+	{
+		m_boxes.at(boxIndex).setSpeed(boxSpeed);
 	}
 
 private:
@@ -269,7 +279,7 @@ public:
 				break;
 			default:
 				runCommand(ans);
-				cout << "What do you want to do? (q: quit, anything else: continue)" << endl;
+				cout << "Please enter a command? (q: quit, d: details)" << endl;
 			}
 
 			getInputLine(cin, ans);
@@ -281,9 +291,28 @@ public:
 	{
 		switch (str2int(command.c_str()))
 		{
+		case str2int("d"):
+			cout << "s: speed adjustment" << endl;
+			break;
+		case str2int("s"):
+			adjustSpeed();
+			break;
 		default:
 			m_pipelineController.stepForward();
 		}
+	}
+
+	void adjustSpeed()
+	{
+		cout << "index of box you want to change: ";
+		int boxIndex = waitForPositiveIntegerFromStdIn();	
+
+		// TODO: check input range
+
+		cout << "please enter new speed: ";
+		int newSpeed = waitForPositiveIntegerFromStdIn();
+
+		m_pipelineController.setSpeed(boxIndex, newSpeed);
 	}
 
 private:
@@ -294,14 +323,14 @@ private:
 
 int main()
 {
-	cout << "Number of boxes? " << endl;
+	cout << "Number of boxes: ";
 	int nbBoxes = waitForPositiveIntegerFromStdIn();
-
+	cout << endl;
 
 	deque<Box> boxQueue;
 	for (int i = 0; i < nbBoxes; ++i)
 	{
-		cout << "Speed for box " << i << "? " << endl;
+		cout << "Speed for box " << i << ": ";
 		int speed = waitForPositiveIntegerFromStdIn();
 		boxQueue.push_back(Box(speed));
 	}
