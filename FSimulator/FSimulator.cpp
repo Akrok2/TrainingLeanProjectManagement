@@ -158,18 +158,18 @@ public:
 		m_lastDayThroughput = m_cumulatedThroughput.size() - lastDayCumulatedThroughput;
 
 		// compute the cycle time
-		int sumQueues = 0;
-		for (const Box& box : m_boxes)
-		{
-			const double tempResult = ((double)box.numberOfQueuedTickets() / (double)box.speed());
-			sumQueues += std::ceil(tempResult);
-		}	
+		computeCycleTime();
 
-		m_cycleTime = m_boxes.size() + sumQueues;
+		// compute the bottleneck (first box starting from the end with a positive number of queued tickets)
+		const int bottleNeckIndex = computeIndexOfBottleneck();
 
 		cout << "daily throughput: " << lastDayThoughputToPrint << endl;
 		cout << "cumulated throughput: " << lastDayCumulatedThroughput << endl;
 		cout << "cycle time: " << m_cycleTime << endl;
+		if (bottleNeckIndex != std::numeric_limits<int>::max())
+			cout << "Bottleneck -> box " << bottleNeckIndex << endl;
+		else
+			cout << "No bottleneck " << endl;
 	}
 
 	void setSpeed(int boxIndex, int boxSpeed)
@@ -178,6 +178,33 @@ public:
 	}
 
 private:
+
+	void computeCycleTime(void)
+	{
+		int sumQueues = 0;
+		for (const Box& box : m_boxes)
+		{
+			const double tempResult = ((double)box.numberOfQueuedTickets() / (double)box.speed());
+			sumQueues += std::ceil(tempResult);
+		}
+
+		m_cycleTime = m_boxes.size() + sumQueues;
+	}
+
+	int computeIndexOfBottleneck(void)
+	{
+		int i = 0;
+		int indexOfBottleneck = std::numeric_limits<int>::max();
+		for (const Box& box : m_boxes)
+		{
+			if (box.numberOfQueuedTickets() > 0)
+				indexOfBottleneck = i;
+			i++;
+		}
+
+		return indexOfBottleneck;
+	}
+
 	void feedInputBoxQueues()
 	{
 		// transfer each box "done" work to "inputbox" queues of next boxes
