@@ -38,7 +38,14 @@ class Ticket
 {
 public:
 	Ticket() {}
+	Ticket(int startDate) 
+	: m_startDate(startDate), m_endDate(9999)
+	{}
 	Ticket(Ticket &&) = delete;
+
+private:
+	int m_startDate;
+	int m_endDate;
 };
 
 
