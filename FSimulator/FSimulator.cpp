@@ -152,8 +152,19 @@ public:
 
 		m_lastDayThroughput = m_cumulatedThroughput.size() - lastDayCumulatedThroughput;
 
+		// compute the cycle time
+		int sumQueues = 0;
+		for (const Box& box : m_boxes)
+		{
+			const double tempResult = ((double)box.numberOfQueuedTickets() / (double)box.speed());
+			sumQueues += std::ceil(tempResult);
+		}	
+
+		m_cycleTime = m_boxes.size() + sumQueues;
+
 		cout << "daily throughput: " << lastDayThoughputToPrint << endl;
 		cout << "cumulated throughput: " << lastDayCumulatedThroughput << endl;
+		cout << "cycle time: " << m_cycleTime << endl;
 	}
 
 private:
@@ -208,6 +219,7 @@ private:
 	deque<TicketEntityPtr> m_cumulatedThroughput;
 	int m_lastDayThroughput;
 	int m_currentDay;
+	int m_cycleTime;
 };
 
 
