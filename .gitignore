@@ -8,3 +8,5 @@
 *.tlog
 *.lastbuildstate
 *.idb
+FSimulator/Debug/fsimulator.obj.enc
+FSimulator/FSimulator.cpp.orig
