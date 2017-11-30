@@ -201,6 +201,11 @@ public:
 		m_boxes.at(boxIndex).setSpeed(boxSpeed);
 	}
 
+	void setWipLimit(int boxIndex, int boxWipLimit)
+	{
+		m_boxes.at(boxIndex).setWipLimit(boxWipLimit);
+	}
+
 private:
 
 	int computeTotalWip(void)
@@ -384,11 +389,15 @@ public:
 			cout << "COMMAND LIST:" << endl;
 			cout << "\td: display this command list" << endl;
 			cout << "\ts: speed adjustment" << endl;
+			cout << "\tw: wip limits adjustment" << endl;
 			cout << "\tq: quit application" << endl;
 			cout << "\tanything else: step one day forward" << endl;
 			break;
 		case str2int("s"):
 			adjustSpeed();
+			break;
+		case str2int("w"):
+			adjustWipLimits();
 			break;
 		default:
 			m_pipelineController.stepForward();
@@ -406,6 +415,19 @@ public:
 		int newSpeed = waitForPositiveIntegerFromStdIn();
 
 		m_pipelineController.setSpeed(boxIndex, newSpeed);
+	}
+
+	void adjustWipLimits()
+	{
+		cout << "index of box you want to change: ";
+		int boxIndex = waitForPositiveIntegerFromStdIn();
+
+		// TODO: check input range
+
+		cout << "please enter new speed: ";
+		int newWipLimit = waitForPositiveIntegerFromStdIn();
+
+		m_pipelineController.setWipLimit(boxIndex, newWipLimit);
 	}
 
 private:
