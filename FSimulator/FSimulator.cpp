@@ -170,6 +170,8 @@ public:
 			cout << "Bottleneck -> box " << bottleNeckIndex << endl;
 		else
 			cout << "No bottleneck " << endl;
+
+		m_currentDay++;
 	}
 
 	void setSpeed(int boxIndex, int boxSpeed)
@@ -240,6 +242,7 @@ private:
 
 	void printBoxStates() const
 	{
+		cout << "*********** DAY " << m_currentDay << "**************" << endl;
 		cout << "system state:" << endl;
 
 		int i = 0;
