@@ -242,7 +242,7 @@ private:
 
 	void printBoxStates() const
 	{
-		cout << "*********** DAY " << m_currentDay << "**************" << endl;
+		cout << "*********** STEP " << m_currentDay << "**************" << endl;
 		cout << "system state:" << endl;
 
 		int i = 0;
