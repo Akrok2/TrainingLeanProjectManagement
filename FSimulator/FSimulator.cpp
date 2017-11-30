@@ -12,7 +12,11 @@
 #include <string>
 #include <limits>
 #include <iterator>
+<<<<<<< HEAD
 #include "textTable.h"
+=======
+#include <algorithm>
+>>>>>>> 889bce9d1d2370bbdc301e2ac145ed117780bcd1
 
 using namespace std;
 
@@ -247,13 +251,20 @@ private:
 		int i = lastBoxIndex;
 		deque<TicketEntityPtr> throughput;
 		for (auto it = m_boxes.rbegin(); it != m_boxes.rend(); ++it)
-		{
-			deque<TicketEntityPtr> previousDoneTickets = popAll(m_boxes[i].doneTickets());
+		{	
 			if (i == lastBoxIndex) {
+				deque<TicketEntityPtr> previousDoneTickets = popAll(m_boxes[i].doneTickets());
 				move(previousDoneTickets.begin(), previousDoneTickets.end(), back_inserter(throughput));
 			}
 			else  {
-				move(previousDoneTickets.begin(), previousDoneTickets.end(), back_inserter(m_boxes[i+1].inboxTickets()));
+				int nextBoxCurrentWIP = m_boxes[i + 1].doneTickets().size() + m_boxes[i + 1].numberOfQueuedTickets();
+				int currentBoxDoneTickets = m_boxes[i].doneTickets().size();
+				int insertableTickets = std::min(m_boxes[i + 1].wipLimit(), currentBoxDoneTickets);
+
+				for (int j = 0; j < insertableTickets; ++j) {
+					auto ticket = pop(m_boxes[i].doneTickets());
+					m_boxes[i + 1].inboxTickets().push_back(std::move(ticket));
+				}
 			}
 
 			--i;
@@ -266,9 +277,14 @@ private:
 		if (m_boxes.empty())
 			return;
 
+		int ticketsToFeed = m_boxes[0].speed();
+		int firstBoxCurrentWIP = m_boxes[0].doneTickets().size() + m_boxes[0].numberOfQueuedTickets();
+		int roomAvailable = m_boxes[0].wipLimit() - firstBoxCurrentWIP;
+		ticketsToFeed = std::min(ticketsToFeed, roomAvailable);
+
 		// feed new work in first box
 		auto & firstBox = m_boxes.front();
-		for (int i = 0; i < firstBox.speed(); ++i) {
+		for (int i = 0; i < ticketsToFeed; ++i) {
 			firstBox.inboxTickets().push_back(make_ticket(m_currentDay));
 		}
 	}
