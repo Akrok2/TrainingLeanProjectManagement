@@ -147,15 +147,21 @@ class PipelineController
 {
 public:
 	PipelineController(deque<Box> boxes)
-		: m_boxes(move(boxes)), m_currentDay(0)
+		: m_boxes(move(boxes))
+		, m_currentDay(0)
 	{}
 
 	void stepForward()
 	{
-		feedInputBoxQueues();
+		auto outputQueue = pullQueuesFromRightToLeft();
+		int dailyThoughput = outputQueue.size();
+		move(outputQueue.begin(), outputQueue.end(), back_inserter(m_cumulatedThroughput));
 
-		int lastDayCumulatedThroughput = m_cumulatedThroughput.size();
-		int lastDayThoughputToPrint = m_lastDayThroughput;
+
+		/*int lastDayCumulatedThroughput = m_cumulatedThroughput.size();
+		int lastDayThoughputToPrint = m_lastDayThroughput;*/
+
+		feedFirstBox();
 
 		// launch boxes sequentially - virtually in parallel in the sim
 		for (auto & box : m_boxes)
@@ -165,9 +171,9 @@ public:
 		printBoxStates();
 
 		// takes last box "done" work to put it in global throughput container
-		updateGlobalThroughput();
+		//updateGlobalThroughput();
 
-		m_lastDayThroughput = m_cumulatedThroughput.size() - lastDayCumulatedThroughput;
+		//m_lastDayThroughput = m_cumulatedThroughput.size() - lastDayCumulatedThroughput;
 
 		// compute the cycle time
 		computeCycleTime();
@@ -175,8 +181,8 @@ public:
 		// compute the bottleneck (first box starting from the end with a positive number of queued tickets)
 		const int bottleNeckIndex = computeIndexOfBottleneck();
 
-		cout << "daily throughput: " << lastDayThoughputToPrint << endl;
-		cout << "cumulated throughput: " << lastDayCumulatedThroughput << endl;
+		cout << "daily throughput: " << dailyThoughput << endl;
+		cout << "cumulated throughput: " << m_cumulatedThroughput.size() << endl;
 		cout << "cycle time: " << m_cycleTime << endl;
 		if (bottleNeckIndex != std::numeric_limits<int>::max())
 			cout << "Bottleneck -> box " << bottleNeckIndex << endl;
@@ -219,15 +225,28 @@ private:
 		return indexOfBottleneck;
 	}
 
-	void feedInputBoxQueues()
+	deque<TicketEntityPtr> pullQueuesFromRightToLeft()
 	{
-		// transfer each box "done" work to "inputbox" queues of next boxes
-		for (unsigned int i = 1; i < m_boxes.size(); ++i)
+		const int lastBoxIndex = m_boxes.size() - 1;
+		int i = lastBoxIndex;
+		deque<TicketEntityPtr> throughput;
+		for (auto it = m_boxes.rbegin(); it != m_boxes.rend(); ++it)
 		{
-			deque<TicketEntityPtr> previousDoneTickets = popAll(m_boxes[i - 1].doneTickets());
-			move(previousDoneTickets.begin(), previousDoneTickets.end(), back_inserter(m_boxes[i].inboxTickets()));
-		}
+			deque<TicketEntityPtr> previousDoneTickets = popAll(m_boxes[i].doneTickets());
+			if (i == lastBoxIndex) {
+				move(previousDoneTickets.begin(), previousDoneTickets.end(), back_inserter(throughput));
+			}
+			else  {
+				move(previousDoneTickets.begin(), previousDoneTickets.end(), back_inserter(m_boxes[i+1].inboxTickets()));
+			}
 
+			--i;
+		}
+		return move(throughput);
+	}
+
+	void feedFirstBox()
+	{
 		if (m_boxes.empty())
 			return;
 
