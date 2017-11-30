@@ -304,8 +304,7 @@ private:
 	{
 		TextTable t('-', '|', '+');
 
-		cout << "*********** STEP " << m_currentDay << "**************" << endl;
-		cout << "system state:" << endl;
+		cout << "********************** STEP " << m_currentDay << "**********************" << endl;
 
 		t.add(" ");
 		int i = 0;
@@ -327,6 +326,13 @@ private:
 		for (const auto & box : m_boxes)
 		{
 			t.add(std::to_string(box.doneTickets().size()));
+		}
+		t.endOfRow();
+
+		t.add("WIP limits");
+		for (const auto & box : m_boxes)
+		{
+			t.add(std::to_string(box.wipLimit()));
 		}
 		t.endOfRow();
 
