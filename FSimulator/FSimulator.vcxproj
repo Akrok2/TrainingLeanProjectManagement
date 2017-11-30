@@ -147,6 +147,7 @@
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="textTable.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FSimulator.cpp" />

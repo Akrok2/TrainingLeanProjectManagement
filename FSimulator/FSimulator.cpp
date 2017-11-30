@@ -12,6 +12,7 @@
 #include <string>
 #include <limits>
 #include <iterator>
+#include "textTable.h"
 #include <algorithm>
 
 using namespace std;
@@ -306,17 +307,36 @@ private:
 
 	void printBoxStates() const
 	{
+		TextTable t('-', '|', '+');
+
 		cout << "*********** STEP " << m_currentDay << "**************" << endl;
 		cout << "system state:" << endl;
 
+		t.add(" ");
 		int i = 0;
 		for (const auto & box : m_boxes)
 		{
-			cout << "box " << i << " (speed: " << box.speed() << ")" << endl;
-			cout << "\t queue: " << box.numberOfQueuedTickets() << endl;
-			cout << "\t in progress: " << box.doneTickets().size() << endl << endl;
-			++i;
+			t.add("box "+std::to_string(i)+" (speed: "+std::to_string(box.speed())+")");
+			i++;
 		}
+		t.endOfRow();
+
+		t.add("Queue");
+		for (const auto & box : m_boxes)
+		{
+			t.add(std::to_string(box.numberOfQueuedTickets()));
+		}
+		t.endOfRow();
+
+		t.add("In Progress");
+		for (const auto & box : m_boxes)
+		{
+			t.add(std::to_string(box.doneTickets().size()));
+		}
+		t.endOfRow();
+
+		t.setAlignment(2, TextTable::Alignment::LEFT);
+		std::cout << t;
 	}
 
 	deque<Box> m_boxes;
