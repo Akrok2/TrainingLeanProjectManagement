@@ -444,7 +444,7 @@ public:
 
 		// TODO: check input range
 
-		cout << "please enter new speed: ";
+		cout << "please enter new wip limit: ";
 		int newWipLimit = waitForPositiveIntegerFromStdIn();
 
 		m_pipelineController.setWipLimit(boxIndex, newWipLimit);
