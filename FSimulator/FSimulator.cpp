@@ -330,7 +330,7 @@ private:
 		}
 		t.endOfRow();
 
-		t.setAlignment(2, TextTable::Alignment::RIGHT);
+		t.setAlignment(2, TextTable::Alignment::LEFT);
 		std::cout << t;
 	}
 
