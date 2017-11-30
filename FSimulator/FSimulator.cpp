@@ -177,7 +177,7 @@ public:
 		// compute the bottleneck (first box starting from the end with a positive number of queued tickets)
 		const int bottleNeckIndex = computeIndexOfBottleneck();
 
-		cout << "daily throughput: " << lastDayThoughputToPrint << endl;
+		cout << "throughput: " << lastDayThoughputToPrint << endl;
 		cout << "cumulated throughput: " << lastDayCumulatedThroughput << endl;
 		cout << "cycle time: " << m_cycleTime << endl;
 		if (bottleNeckIndex != std::numeric_limits<int>::max())
