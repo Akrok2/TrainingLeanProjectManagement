@@ -152,6 +152,8 @@ public:
 		// logging/display only
 		printBoxStates();
 
+		const int totalWip = computeTotalWip();
+
 		// takes last box "done" work to put it in global throughput container
 		updateGlobalThroughput();
 
@@ -170,6 +172,7 @@ public:
 			cout << "Bottleneck -> box " << bottleNeckIndex << endl;
 		else
 			cout << "No bottleneck " << endl;
+		cout << "Total WIP : " << totalWip << endl;
 
 		m_currentDay++;
 	}
@@ -180,6 +183,18 @@ public:
 	}
 
 private:
+
+	int computeTotalWip(void)
+	{
+		int totalWip(0);
+		for (const Box& box : m_boxes)
+		{
+			totalWip += box.numberOfQueuedTickets() + box.doneTickets().size();
+		}
+
+		return totalWip;
+	}
+	
 
 	void computeCycleTime(void)
 	{
