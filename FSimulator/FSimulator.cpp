@@ -334,7 +334,7 @@ private:
 		}
 		t.endOfRow();
 
-		t.add("WIP limits");
+		t.add("WIP limit");
 		for (const auto & box : m_boxes)
 		{
 			t.add(std::to_string(box.wipLimit()));
