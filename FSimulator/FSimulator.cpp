@@ -307,12 +307,12 @@ private:
 		cout << "*********** STEP " << m_currentDay << "**************" << endl;
 		cout << "system state:" << endl;
 
-		int i = 0;
-
 		t.add(" ");
+		int i = 0;
 		for (const auto & box : m_boxes)
 		{
 			t.add("box "+std::to_string(i)+" (speed: "+std::to_string(box.speed())+")");
+			i++;
 		}
 		t.endOfRow();
 
