@@ -12,11 +12,8 @@
 #include <string>
 #include <limits>
 #include <iterator>
-<<<<<<< HEAD
 #include "textTable.h"
-=======
 #include <algorithm>
->>>>>>> 889bce9d1d2370bbdc301e2ac145ed117780bcd1
 
 using namespace std;
 
