@@ -78,6 +78,7 @@ class Box
 public:
 	Box(int speed)
 		: m_speed(speed)
+		, m_wipLimit(std::numeric_limits<int>::max())
 	{}
 
 	Box(Box &&) = default;
@@ -95,6 +96,16 @@ public:
 	int speed() const
 	{
 		return m_speed;
+	}
+
+	void setWipLimit(int value)
+	{
+		m_wipLimit = value;
+	}
+
+	int wipLimit() const
+	{
+		return m_wipLimit;
 	}
 
 	deque<TicketEntityPtr> &inboxTickets()
@@ -126,6 +137,7 @@ public:
 
 private:
 	int m_speed;
+	int m_wipLimit;
 	deque<TicketEntityPtr> m_doneTickets;
 	deque<TicketEntityPtr> m_inboxTickets;
 };
@@ -292,7 +304,11 @@ public:
 		switch (str2int(command.c_str()))
 		{
 		case str2int("d"):
-			cout << "s: speed adjustment" << endl;
+			cout << "COMMAND LIST:" << endl;
+			cout << "\td: display this command list" << endl;
+			cout << "\ts: speed adjustment" << endl;
+			cout << "\tq: quit application" << endl;
+			cout << "\tanything else: step one day forward" << endl;
 			break;
 		case str2int("s"):
 			adjustSpeed();
